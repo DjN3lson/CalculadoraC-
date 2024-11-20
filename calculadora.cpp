@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <fstream>
 
 using namespace std;
 
@@ -73,16 +74,15 @@ void productoCruz(const vector<float> &v1, const vector<float> &v2, vector<float
     resultado[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
-
-bool Matriz_es_Simmetrica(const vector<vector<float>>& matriz)
+bool Matriz_es_Simmetrica(const vector<vector<float>> &matriz)
 {
-   int n = matriz.size();
+    int n = matriz.size();
 
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            if (matriz[i][j] != matriz[j][i]) 
+            if (matriz[i][j] != matriz[j][i])
             {
                 return false; // no es simetrica
             }
@@ -92,7 +92,64 @@ bool Matriz_es_Simmetrica(const vector<vector<float>>& matriz)
     return true; // si es simetrica
 }
 
+void Ecuaciones_de_3_Incognitas(vector<vector<float>> &matriz)
+{
+    int fila = 3;
+    int columna = 4;
+    if (matriz.size() != fila || matriz[0].size() != columna)
+    {
+        cout << "Error: la matriz debe ser de tamano 3x4 " << endl;
+        return;
+    }
 
+    // Aplicando eliminacion de Gauss
+    for (int i = 0; i < fila; i++)
+    {
+        float diagonal = matriz[i][i]; // hacer el elemento diagonal sea 1
+        if (diagonal == 0)
+        {
+            cout << "Error: Division por cero no se puede, no hay solucion" << endl;
+            return;
+        }
+        for (int j = 0; j < columna; j++)
+        {
+            matriz[i][j] /= diagonal;
+        }
+
+        for (int k = i + 1; k < fila; k++)
+        {
+            float factor = matriz[k][i];
+            for (int j = 0; j < columna; j++)
+            {
+                matriz[k][j] -= factor * matriz[i][j];
+            }
+        }
+    }
+
+    float z = matriz[2][3];                                       // solucion para z
+    float y = matriz[1][3] - matriz[1][2] * z;                    // solucion para y
+    float x = matriz[0][3] - matriz[0][1] * y - matriz[0][2] * z; // solucion para x
+
+    cout << "Solucion de x = " << x;
+    cout << "\nSolucion de y = " << y;
+    cout << "\nSolucion de z = " << z;
+}
+
+void Salvar_Archivo()
+{
+    ofstream archivo;
+    archivo.open("Calculadora.txt", ios::out);
+
+    if (archivo.fail())
+    {
+        cout << "Error al guardar el archivo";
+    }
+    else
+    {
+        archivo << "Calculadora" << endl;
+        archivo.close();
+    }
+}
 
 int main()
 {
@@ -215,17 +272,50 @@ int main()
             {
                 for (int j = 0; j < n; j++)
                 {
-                    cout << "Elemento " << i << " x " << j << " : ";
-                    cin>> matriz[i][j];
+                    cout << "Elemento (fila)" << i << " x (columna)" << j << " : ";
+                    cin >> matriz[i][j];
                 }
             }
 
             if (Matriz_es_Simmetrica(matriz))
             {
-                cout<<"La matriz es simetrica!\n";
-            }else{
-                cout<<"La matriz no es simetrica!\n";
+                cout << "La matriz es simetrica!\n";
             }
+            else
+            {
+                cout << "La matriz no es simetrica!\n";
+            }
+            break;
+        }
+        case 7:
+        {
+            vector<vector<float>> matriz(3, vector<float>(4));
+            cout << "Ingrese los coeficientes de las ecuaciones (3x4) " << endl;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    cout << "Elemento (fila)" << i + 1 << " x (columna)" << j + 1 << " : ";
+                    cin >> matriz[i][j];
+                }
+            }
+            
+            cout << "\nEcuaciones ingresadas:\n";
+            for (int i = 0; i < 3; i++)
+            {
+                cout << matriz[i][0] << "x + "
+                     << matriz[i][1] << "y + "
+                     << matriz[i][2] << "z = "
+                     << matriz[i][3] << endl;
+            }
+
+            Ecuaciones_de_3_Incognitas(matriz);
+            cout<<"\n";
+            break;
+        }
+        case 8:
+        {
+            Salvar_Archivo();
             break;
         }
         case 9:
