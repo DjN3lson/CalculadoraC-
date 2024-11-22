@@ -138,7 +138,7 @@ void Ecuaciones_de_3_Incognitas(vector<vector<float>> &matriz)
 void Salvar_Archivo()
 {
     ofstream archivo;
-    archivo.open("Calculadora.txt", ios::out);
+    archivo.open("./Calculadora.txt", ios::out);
 
     if (archivo.fail())
     {
@@ -146,9 +146,33 @@ void Salvar_Archivo()
     }
     else
     {
-        archivo << "Calculadora" << endl;
-        archivo.close();
+        float a, b, c;
+        cout << "Ingrese el coeficiente a (para ax^2 + bx + c): ";
+        ;
+        cin >> a;
+        cout << "Ingrese el coeficiente b: ";
+        cin >> b;
+        cout << "Ingrese el coeficiente c: ";
+        cin >> c;
+
+        float inicio, fin, paso;
+        cout << "Ingrese el inicio del intervalo: ";
+        cin >> inicio;
+        cout << "Ingrese el fin del intervalo: ";
+        cin >> fin;
+        cout << "Ingrese el paso: ";
+        cin >> paso;
+
+        archivo << "Tabulacion de la ecuacion: " << a << "x^2 + " << b << "x + " << c << endl;
+        archivo << "x\tResultado" << endl;
+
+        for (double x = inicio; x <= fin; x += paso)
+        {
+            float resultado = a * x * x + b * x + c;
+            archivo << x << "\t" << resultado << endl;
+        }
     }
+    archivo.close();
 }
 
 int main()
@@ -166,7 +190,7 @@ int main()
         cout << "5. Producto cruz de dos vectores [3x3]" << endl;
         cout << "6. Determina si una matriz es simetrica" << endl;
         cout << "7. Resolucion de sistemas de ecuaciones de 3 incognitas" << endl;
-        cout << "8. Guardas en .txt file " << endl;
+        cout << "8. Guardar tabulacion en archivo .txt" << endl;
         cout << "9. Salir" << endl;
         cout << "Seleccione una opción: ";
         cin >> opcion;
@@ -299,7 +323,7 @@ int main()
                     cin >> matriz[i][j];
                 }
             }
-            
+
             cout << "\nEcuaciones ingresadas:\n";
             for (int i = 0; i < 3; i++)
             {
@@ -310,7 +334,7 @@ int main()
             }
 
             Ecuaciones_de_3_Incognitas(matriz);
-            cout<<"\n";
+            cout << "\n";
             break;
         }
         case 8:
