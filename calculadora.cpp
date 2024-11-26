@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <fstream>
+#include <filesystem>
 
 using namespace std;
 
@@ -135,44 +136,57 @@ void Ecuaciones_de_3_Incognitas(vector<vector<float>> &matriz)
     cout << "\nSolucion de z = " << z;
 }
 
-void Salvar_Archivo()
+int Salvar_Archivo()
 {
-    ofstream archivo;
-    archivo.open("./Calculadora.txt", ios::out);
+    string rutaArchivo = (filesystem::current_path() / "Calculadora.txt").string();
+    ofstream archivo(rutaArchivo);
 
-    if (archivo.fail())
+    if (!archivo)
     {
-        cout << "Error al guardar el archivo";
+        cout << "Error al guardar el archivo"<<endl;
+        return 1;
     }
     else
     {
-        float a, b, c;
+        double a, b, c;
         cout << "Ingrese el coeficiente a (para ax^2 + bx + c): ";
-        ;
         cin >> a;
+        archivo << "Valor de a: "<< a;
         cout << "Ingrese el coeficiente b: ";
         cin >> b;
+        archivo <<"\nValor de b "<< b;
         cout << "Ingrese el coeficiente c: ";
         cin >> c;
+        archivo <<"\nValor de c: "<< c;
 
-        float inicio, fin, paso;
+        double inicio, fin, paso;
         cout << "Ingrese el inicio del intervalo: ";
         cin >> inicio;
+        archivo <<"\nInicio: "<< inicio;
         cout << "Ingrese el fin del intervalo: ";
         cin >> fin;
+        archivo <<"\nFinal: "<< fin;
         cout << "Ingrese el paso: ";
         cin >> paso;
+        archivo <<"\nPaso: "<< paso;
+
+        archivo<<endl;
+
+        cout<<"Tabulacion de la ecuacion: " << a << "x^2 + " << b << "x + " << c << endl;
 
         archivo << "Tabulacion de la ecuacion: " << a << "x^2 + " << b << "x + " << c << endl;
         archivo << "x\tResultado" << endl;
 
         for (double x = inicio; x <= fin; x += paso)
         {
-            float resultado = a * x * x + b * x + c;
+            double resultado = a * x * x + b * x + c;
             archivo << x << "\t" << resultado << endl;
         }
     }
     archivo.close();
+    cout<<"Tabulacion guardada en 'Calculadora.txt'."<<endl;
+    
+    return 0;
 }
 
 int main()
